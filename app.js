@@ -56,6 +56,13 @@ const initialItems = [
   { id: 'aavalu', name: 'Mustard Seeds (Aavalu)', telugu: 'ఆవాలు (Aavalu)', category: 'spices-baking', emoji: '⚫', defaultUnit: 'grams', image: 'https://ricedesk.com/product-images/Mustard-Seeds-Small.jpg/788104000002905349/700x700' }
 ];
 
+// Clean Telugu names in initialItems to keep only the first name (before the slash)
+initialItems.forEach(item => {
+  if (item.telugu && item.telugu.includes('/')) {
+    item.telugu = item.telugu.split('/')[0].trim();
+  }
+});
+
 const categories = [
   { id: 'all', name: 'All', emoji: '✨' },
   { id: 'lentils-grains', name: 'Lentils & Grains', emoji: '🌾' },
@@ -92,6 +99,12 @@ function loadState() {
   if (savedCustomItems) {
     try {
       const customItems = JSON.parse(savedCustomItems);
+      // Clean custom items as well
+      customItems.forEach(item => {
+        if (item.telugu && item.telugu.includes('/')) {
+          item.telugu = item.telugu.split('/')[0].trim();
+        }
+      });
       dbItems = [...initialItems, ...customItems];
     } catch (e) {
       dbItems = [...initialItems];
