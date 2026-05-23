@@ -13,9 +13,11 @@ const initialItems = [
   { id: 'rock-salt', name: 'Rock Salt', telugu: 'కల్లు ఉప్పు (Rock Salt)', category: 'pantry-essentials', emoji: '🧂', defaultUnit: 'kg', image: 'https://halagel.com.my/wp-content/uploads/2022/02/rock-salt-pink-crystal-1.png' },
   { id: 'dry-chilies', name: 'Dry Red Chilies', telugu: 'ఎండు మిరపకాయలు (Dry Chilies)', category: 'spices-baking', emoji: '🌶️', defaultUnit: 'kg', image: 'https://m.media-amazon.com/images/I/71VvdYOLkDL._SL1280_.jpg' },
   { id: 'coconut', name: 'Coconut', telugu: 'కొబ్బరికాయ (Coconut)', category: 'pantry-essentials', emoji: '🥥', defaultUnit: 'pieces', image: 'https://4.imimg.com/data4/YW/RF/MY-9925084/raw-coconut-shell-500x500.jpg' },
-  { id: 'soaps', name: 'Soaps (Cinthol/Dettol/Hammam)', telugu: 'సబ్బులు (Saops)', category: 'household-toiletries', emoji: '🧼', defaultUnit: 'pieces', image: 'https://martoo.com/wp-content/uploads/2026/01/Cinthol-Herbal-Bar-Soap-125g-72-pcs-x-125g-768x768.jpg' },
+  { id: 'cinthol-soap', name: 'Cinthol Soap', telugu: 'సింథాల్ సబ్బు (Cinthol Soap)', category: 'household-toiletries', emoji: '🧼', defaultUnit: 'pieces', image: 'https://martoo.com/wp-content/uploads/2026/01/Cinthol-Herbal-Bar-Soap-125g-72-pcs-x-125g-768x768.jpg' },
+  { id: 'hammam-soap', name: 'Hammam Soap', telugu: 'హమామ్ సబ్బు (Hammam Soap)', category: 'household-toiletries', emoji: '🧼', defaultUnit: 'pieces', image: 'https://www.bigbasket.com/media/uploads/p/l/1206161_2-hamam-neem-tulsi-aloe-vera-soap.jpg' },
+  { id: 'dettol-soap', name: 'Dettol Soap', telugu: 'డెటాల్ సబ్బు (Dettol Soap)', category: 'household-toiletries', emoji: '🧼', defaultUnit: 'pieces', image: 'https://images.apollo247.in/pub/media/catalog/product/d/e/det0005_1-july23.jpg' },
   { id: 'dish-wash', name: 'Vim Bar (Dish Wash)', telugu: 'గిన్నెల సబ్బు (Vim Bar)', category: 'household-toiletries', emoji: '🧽', defaultUnit: 'pieces', image: 'https://img500.exportersindia.com/product_images/bc-500/2023/11/8738143/vim-bar-dishwashing-soap-1669798493-6649375.jpg' },
-  { id: 'dove-shampoo', name: 'Dove Shampoo', telugu: 'డవ్ షాంపూ (Dove Shampoo)', category: 'household-toiletries', emoji: '🧴', defaultUnit: 'pieces', image: 'https://www.pineapplehospitality.net/media/catalog/product/cache/7d6cbed97c2eefa32e645835bb804162/2/1/210726_dove-ihg-us-individual_sh-fop_1_.jpg' },
+  { id: 'dove-shampoo', name: 'Dove Shampoo', telugu: 'డవ్ షాంపూ (Dove Shampoo)', category: 'household-toiletries', emoji: '🧴', defaultUnit: 'sheets', image: 'https://www.pineapplehospitality.net/media/catalog/product/cache/7d6cbed97c2eefa32e645835bb804162/2/1/210726_dove-ihg-us-individual_sh-fop_1_.jpg' },
   { id: 'match-box', name: 'Match Box', telugu: 'అగ్గిపెట్టె (Match Box)', category: 'household-toiletries', emoji: '🔥', defaultUnit: 'packets', image: 'https://5.imimg.com/data5/SELLER/Default/2022/11/NP/EC/IO/35806921/aim-safety-match-box-1000x1000.jpeg' },
   { id: 'idli-ravva', name: 'Idli Rava (Idli Ravva)', telugu: 'ఇడ్లీ రవ్వ (Idli Ravva)', category: 'lentils-grains', emoji: '🍚', defaultUnit: 'kg', image: 'https://thedesifood.com/media/MTR%20Original%20Rava%20Idli%20Ready%20Mix,%20500%20g-1.webp' },
   { id: 'bansi-ravva', name: 'Bansi Rava (Bansi Ravva)', telugu: 'బన్సీ రవ్వ (Bansi Ravva)', category: 'lentils-grains', emoji: '🌾', defaultUnit: 'kg', image: 'https://www.bigbasket.com/media/uploads/p/xl/40293255_1-aashirvaad-bansi-rava-made-from-durum-wheat.jpg' },
@@ -180,6 +182,13 @@ function getPresetsForUnit(unit) {
         { label: '1 btl', value: 1 },
         { label: '2 btls', value: 2 }
       ];
+    case 'sheets':
+      return [
+        { label: '1 sheet', value: 1 },
+        { label: '2 sheets', value: 2 },
+        { label: '3 sheets', value: 3 },
+        { label: '5 sheets', value: 5 }
+      ];
     default:
       return [
         { label: '1', value: 1 },
@@ -191,6 +200,9 @@ function getPresetsForUnit(unit) {
 
 // Available units depending on item defaults
 function getUnitsForDefault(defaultUnit) {
+  if (defaultUnit === 'sheets') {
+    return ['sheets', 'pieces', 'packets'];
+  }
   if (['kg', 'grams'].includes(defaultUnit)) {
     return ['kg', 'grams', 'packets', 'pieces'];
   }
