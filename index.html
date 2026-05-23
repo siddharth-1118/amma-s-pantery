@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Amma's Pantry | ఆమ్మాస్ ప్యాంట్రీ</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="A simple, premium grocery list builder for Mom. Select items, adjust quantities, and generate clean lists for the shopkeeper.">
+  <meta name="theme-color" content="#2c5e43">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- html2canvas for Screenshot Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Local CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Decorative Bar -->
+  <div class="decor-bar"></div>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <span class="logo-emoji">🌾</span>
+        <div class="logo-text">
+          <h1>Amma's Pantry</h1>
+          <span class="sub-logo">ఆమ్మాస్ ప్యాంట్రీ</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="theme-toggle-btn" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Search and Quick Summary Panel -->
+    <section class="search-section">
+      <div class="search-wrapper">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="search-input" placeholder="Search items... (e.g. kandi, soap, sugar)" aria-label="Search items">
+        <button id="clear-search-btn" class="clear-search-hidden" title="Clear search"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </section>
+
+    <!-- Category Tabs -->
+    <section class="categories-section">
+      <div class="categories-scroll" id="categories-container">
+        <!-- Categories will be injected dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- Grid of Products -->
+    <section class="products-section">
+      <div class="section-title-bar">
+        <h2 id="current-category-title">All Items</h2>
+        <span id="items-count-badge">52 items</span>
+      </div>
+      <div id="products-grid" class="products-grid">
+        <!-- Cards will be injected dynamically by JS -->
+      </div>
+      
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state hidden">
+        <div class="empty-icon">🔍</div>
+        <h3>No items found</h3>
+        <p>Try searching for something else or add a custom item below.</p>
+        <button id="empty-add-custom-btn" class="primary-btn mini-btn">Add Custom Item</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Persistent Floating Action Button (FAB) / Cart summary -->
+  <div id="cart-bar" class="cart-bar hidden">
+    <div class="cart-bar-content" id="cart-bar-trigger">
+      <div class="cart-bar-info">
+        <div class="cart-icon-wrapper">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span id="cart-badge-count" class="cart-badge">0</span>
+        </div>
+        <div class="cart-bar-text">
+          <span class="cart-bar-title">Selected Items</span>
+          <span id="cart-bar-preview" class="cart-bar-preview">No items selected yet</span>
+        </div>
+      </div>
+      <button class="cart-bar-btn">
+        View List <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Cart & Custom Items Drawer (Side Panel / Bottom Sheet) -->
+  <div id="cart-drawer-overlay" class="drawer-overlay hidden"></div>
+  <div id="cart-drawer" class="cart-drawer hidden">
+    <div class="drawer-header">
+      <div class="drawer-title-wrapper">
+        <i class="fa-solid fa-basket-shopping drawer-icon"></i>
+        <h2>Selected Items</h2>
+      </div>
+      <button id="close-drawer-btn" class="close-btn" aria-label="Close drawer">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Selected Items List -->
+      <div class="selected-items-section">
+        <div class="selected-header">
+          <span id="drawer-items-count">0 items selected</span>
+          <button id="clear-all-btn" class="text-danger-btn"><i class="fa-solid fa-trash-can"></i> Clear All</button>
+        </div>
+        <div id="drawer-items-list" class="drawer-items-list">
+          <!-- Item list injected by JS -->
+        </div>
+      </div>
+
+      <!-- Add Custom Item Accordion/Form -->
+      <div class="custom-item-form-wrapper">
+        <button id="toggle-custom-form-btn" class="form-toggle-btn">
+          <span><i class="fa-solid fa-plus-circle"></i> Add Something Else?</span>
+          <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+        </button>
+        
+        <form id="custom-item-form" class="custom-form collapsed">
+          <div class="form-group">
+            <label for="custom-name">Item Name (English & Telugu)</label>
+            <input type="text" id="custom-name" placeholder="e.g. Milk / పాలు" required>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="custom-category">Category</label>
+              <select id="custom-category">
+                <option value="lentils-grains">Lentils & Grains</option>
+                <option value="spices-baking">Spices & Herbs</option>
+                <option value="nuts-seeds">Nuts & Seeds</option>
+                <option value="household-toiletries" selected>Household & Soap</option>
+                <option value="oils-liquids">Oils & Liquids</option>
+                <option value="pantry-essentials">Essentials (Sugar/Salt)</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="custom-unit">Default Unit</label>
+              <select id="custom-unit">
+                <option value="kg">kg</option>
+                <option value="grams">grams</option>
+                <option value="pieces" selected>pieces</option>
+                <option value="packets">packets</option>
+                <option value="liters">liters</option>
+                <option value="ml">ml</option>
+                <option value="bottle">bottle</option>
+              </select>
+            </div>
+          </div>
+          
+          <button type="submit" class="primary-btn full-btn">Add to List</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="drawer-footer">
+      <button id="generate-list-btn" class="success-btn full-btn large-btn">
+        <i class="fa-solid fa-file-invoice"></i> Create Shopkeeper List
+      </button>
+    </div>
+  </div>
+
+  <!-- Screenshot / Receipt Modal (For Screenshot and Send) -->
+  <div id="receipt-modal-overlay" class="modal-overlay hidden"></div>
+  <div id="receipt-modal" class="receipt-modal hidden">
+    <div class="modal-header">
+      <h2>List for Shopkeeper</h2>
+      <button id="close-modal-btn" class="close-btn" aria-label="Close modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- This block is what gets captured / screenshotted -->
+      <div id="receipt-capture-area" class="receipt-capture-area">
+        <div class="receipt-paper">
+          <!-- Stylized top serrated edge effect in CSS -->
+          <div class="receipt-header">
+            <h3>AMMAMMA'S GROCERY LIST</h3>
+            <p class="receipt-subtitle">అమ్మమ్మ కిరాణా లిస్ట్</p>
+            <div class="receipt-meta">
+              <span id="receipt-date">Date: 23-May-2026</span>
+              <span id="receipt-item-count">Total: 0 Items</span>
+            </div>
+            <div class="receipt-divider"></div>
+          </div>
+          
+          <!-- Note for the shopkeeper -->
+          <div class="shopkeeper-note">
+            <label for="shopkeeper-instructions">Note for Shopkeeper (ఆప్షనల్):</label>
+            <textarea id="shopkeeper-instructions" placeholder="e.g. Please pack everything nicely. / దయచేసి మంచి క్వాలిటీ ఇవ్వండి." rows="2"></textarea>
+          </div>
+          
+          <!-- Printable Grocery List Table -->
+          <table class="receipt-table">
+            <thead>
+              <tr>
+                <th class="col-check"><i class="fa-regular fa-square-check"></i></th>
+                <th class="col-item">Item Name (వస్తువు పేరు)</th>
+                <th class="col-qty">Qty (పరిమాణం)</th>
+              </tr>
+            </thead>
+            <tbody id="receipt-items-body">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+          
+          <div class="receipt-footer">
+            <div class="receipt-divider"></div>
+            <p class="thank-you">Made with ❤️ for Mom</p>
+            <p class="app-credit">Pantry List App</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Actions Panel -->
+      <div class="modal-actions">
+        <button id="btn-download-image" class="action-btn download-btn">
+          <i class="fa-solid fa-image"></i>
+          <span>Save Image (గ్యాలరీలో సేవ్ చేయి)</span>
+        </button>
+        <button id="btn-whatsapp-share" class="action-btn whatsapp-btn">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>Send via WhatsApp (వాట్సాప్ పంపించు)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast hidden">
+    <span id="toast-message">Item added to cart</span>
+  </div>
+
+  <!-- Local Script -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
