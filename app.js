@@ -74,12 +74,17 @@ let dbItems = [...initialItems];
 let cart = {}; // maps item.id -> { qty: Number, unit: String }
 let activeCategory = 'all';
 let searchTerm = '';
+let currentFontScale = 1.0;
 
 // Load data from LocalStorage
 function loadState() {
   const savedCart = localStorage.getItem('pantry_cart');
   const savedCustomItems = localStorage.getItem('pantry_custom_items');
   const savedTheme = localStorage.getItem('pantry_theme') || 'light';
+  const savedFontScale = localStorage.getItem('pantry_font_scale') || '1.0';
+  
+  currentFontScale = parseFloat(savedFontScale);
+  document.documentElement.style.setProperty('--font-scale', currentFontScale);
   
   if (savedCart) {
     try { cart = JSON.parse(savedCart); } catch (e) { cart = {}; }
@@ -105,6 +110,7 @@ function loadState() {
 // Save state to LocalStorage
 function saveState() {
   localStorage.setItem('pantry_cart', JSON.stringify(cart));
+  localStorage.setItem('pantry_font_scale', currentFontScale.toString());
   const customItems = dbItems.filter(item => item.isCustom);
   localStorage.setItem('pantry_custom_items', JSON.stringify(customItems));
 }
@@ -190,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProducts();
   updateCartUI();
   setupEventListeners();
+  setupFontScaleControls();
 });
 
 // Render Category Tabs
@@ -859,4 +866,58 @@ function showToast(message) {
   toastTimeout = setTimeout(() => {
     toast.classList.remove('show');
   }, 2500);
+}
+
+// ========================================================================
+//   ACCESSIBILITY: FONT SIZE ADJUSTMENT LOGIC
+// ========================================================================
+function setupFontScaleControls() {
+  const fontToggleBtn = document.getElementById('font-toggle-btn');
+  const fontPopover = document.getElementById('font-popover');
+  const fontOptBtns = document.querySelectorAll('.font-opt-btn');
+  
+  // Toggle Popover
+  fontToggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    fontPopover.classList.toggle('hidden');
+  });
+  
+  // Font size selection
+  fontOptBtns.forEach(btn => {
+    const scaleValue = parseFloat(btn.dataset.scale);
+    
+    // Set initial active state based on current scale
+    if (scaleValue === currentFontScale) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+    
+    btn.addEventListener('click', () => {
+      currentFontScale = scaleValue;
+      saveState();
+      
+      // Apply scale
+      document.documentElement.style.setProperty('--font-scale', currentFontScale);
+      
+      // Update UI active buttons
+      fontOptBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Hide Popover
+      fontPopover.classList.add('hidden');
+      
+      // Show confirmation toast
+      const label = btn.querySelector('.font-opt-text').innerText;
+      const telugu = btn.querySelector('.font-opt-telugu').innerText;
+      showToast(`Font Size: ${label} (${telugu})`);
+    });
+  });
+  
+  // Click outside listener to dismiss popover
+  document.addEventListener('click', (e) => {
+    if (!fontToggleBtn.contains(e.target) && !fontPopover.contains(e.target)) {
+      fontPopover.classList.add('hidden');
+    }
+  });
 }

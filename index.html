@@ -41,6 +41,29 @@
         </div>
       </div>
       <div class="header-actions">
+        <div class="font-popover-wrapper">
+          <button id="font-toggle-btn" class="icon-btn" title="Change Font Size" aria-label="Change Font Size">
+            <i class="fa-solid fa-font"></i>
+          </button>
+          <div id="font-popover" class="font-popover hidden">
+            <button class="font-opt-btn" data-scale="0.85">
+              <span class="font-opt-text" style="font-size: 13px;">Small</span>
+              <span class="font-opt-telugu" style="font-size: 11px;">చిన్నది</span>
+            </button>
+            <button class="font-opt-btn active" data-scale="1.0">
+              <span class="font-opt-text" style="font-size: 15px;">Default</span>
+              <span class="font-opt-telugu" style="font-size: 13px;">సాధారణం</span>
+            </button>
+            <button class="font-opt-btn" data-scale="1.25">
+              <span class="font-opt-text" style="font-size: 17px;">Large</span>
+              <span class="font-opt-telugu" style="font-size: 15px;">పెద్దది</span>
+            </button>
+            <button class="font-opt-btn" data-scale="1.45">
+              <span class="font-opt-text" style="font-size: 19px;">X-Large</span>
+              <span class="font-opt-telugu" style="font-size: 17px;">చాలా పెద్దది</span>
+            </button>
+          </div>
+        </div>
         <button id="theme-toggle-btn" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
           <i class="fa-solid fa-moon"></i>
         </button>

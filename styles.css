@@ -4,6 +4,21 @@
 ======================================================================== 
 */
 :root {
+  --font-scale: 1.0;
+  
+  /* Dynamic Font Sizes */
+  --font-size-telugu: calc(16px * var(--font-scale));
+  --font-size-english: calc(13px * var(--font-scale));
+  --font-size-qty: calc(15px * var(--font-scale));
+  --font-size-presets: calc(12px * var(--font-scale));
+  --font-size-unit: calc(12px * var(--font-scale));
+  --font-size-add-btn: calc(14px * var(--font-scale));
+  --font-size-search: calc(17px * var(--font-scale));
+  --font-size-category: calc(15px * var(--font-scale));
+  --font-size-drawer-title: calc(15px * var(--font-scale));
+  --font-size-drawer-sub: calc(12px * var(--font-scale));
+  --font-size-drawer-pill: calc(13px * var(--font-scale));
+
   /* Colors - Light Theme (Warm cozy kitchen) */
   --bg-primary: #FDFBF7;
   --bg-secondary: #F6F3EB;
@@ -293,7 +308,7 @@ input:focus, select:focus, textarea:focus {
 .search-wrapper input {
   width: 100%;
   padding: 16px 20px 16px 52px;
-  font-size: 17px;
+  font-size: var(--font-size-search);
   border-radius: 18px;
   box-shadow: var(--shadow-sm);
   border-color: var(--border-color);
@@ -366,7 +381,7 @@ input:focus, select:focus, textarea:focus {
   border-radius: 30px;
   color: var(--text-secondary);
   font-weight: 600;
-  font-size: 15px;
+  font-size: var(--font-size-category);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -544,7 +559,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .product-telugu-name {
-  font-size: 16px;
+  font-size: var(--font-size-telugu);
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.25;
@@ -554,7 +569,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .product-english-name {
-  font-size: 13px;
+  font-size: var(--font-size-english);
   color: var(--text-secondary);
   font-weight: 500;
   white-space: nowrap;
@@ -593,7 +608,7 @@ input:focus, select:focus, textarea:focus {
   border: 1px dashed var(--border-color);
   border-radius: 8px;
   padding: 5px 8px;
-  font-size: 12px;
+  font-size: var(--font-size-presets);
   font-weight: 600;
   transition: all var(--transition-fast);
 }
@@ -619,7 +634,7 @@ input:focus, select:focus, textarea:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: var(--font-size-add-btn);
   font-weight: bold;
   background-color: var(--bg-card);
   color: var(--text-primary);
@@ -641,7 +656,7 @@ input:focus, select:focus, textarea:focus {
   width: 36px;
   text-align: center;
   font-weight: 700;
-  font-size: 15px;
+  font-size: var(--font-size-qty);
   color: var(--text-primary);
 }
 
@@ -650,7 +665,7 @@ input:focus, select:focus, textarea:focus {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 4px 6px;
-  font-size: 12px;
+  font-size: var(--font-size-unit);
   font-weight: 600;
   background-color: var(--bg-card);
   cursor: pointer;
@@ -671,7 +686,7 @@ input:focus, select:focus, textarea:focus {
   justify-content: center;
   gap: 4px;
   transition: all var(--transition-fast);
-  font-size: 14px;
+  font-size: var(--font-size-add-btn);
   width: auto;
 }
 .add-initial-btn:hover {
@@ -972,13 +987,13 @@ input:focus, select:focus, textarea:focus {
 }
 
 .drawer-item-title {
-  font-size: 15px;
+  font-size: var(--font-size-drawer-title);
   font-weight: 700;
   line-height: 1.2;
 }
 
 .drawer-item-sub {
-  font-size: 12px;
+  font-size: var(--font-size-drawer-sub);
   color: var(--text-secondary);
 }
 
@@ -992,7 +1007,7 @@ input:focus, select:focus, textarea:focus {
   background-color: var(--bg-card);
   padding: 6px 12px;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: var(--font-size-drawer-pill);
   font-weight: 700;
   border: 1px solid var(--border-color);
 }
@@ -1398,3 +1413,74 @@ input:focus, select:focus, textarea:focus {
   }
 }
 
+/* 
+========================================================================
+   FONT SIZE POPOVER SELECTOR
+======================================================================== 
+*/
+.font-popover-wrapper {
+  position: relative;
+}
+
+.font-popover {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  background-color: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 500;
+  min-width: 160px;
+  animation: popoverIn var(--transition-fast) forwards;
+}
+
+@keyframes popoverIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.font-opt-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 12px;
+  border-radius: 10px;
+  width: 100%;
+  text-align: left;
+  transition: background-color var(--transition-fast);
+}
+
+.font-opt-btn:hover {
+  background-color: var(--bg-secondary);
+}
+
+.font-opt-btn.active {
+  background-color: var(--accent-light);
+  color: var(--accent-primary);
+}
+
+.font-opt-text {
+  font-weight: 700;
+}
+
+.font-opt-telugu {
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+.font-opt-btn.active .font-opt-telugu {
+  color: var(--accent-primary);
+}
