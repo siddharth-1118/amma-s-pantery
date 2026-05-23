@@ -813,7 +813,7 @@ function setupEventListeners() {
       day: 'numeric', month: 'short', year: 'numeric'
     });
     
-    let text = `🛒 *ఆమ్మాస్ కిరాణా లిస్ట్ | Mom's Grocery List*\n`;
+    let text = `🛒 *ఆమ్మాస్ ప్యాంట్రీ | Amma's Pantry*\n`;
     text += `📅 తేదీ (Date): ${formattedDate}\n`;
     text += `---------------------------------\n\n`;
     
