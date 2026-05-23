@@ -277,22 +277,22 @@ function renderProducts() {
     
     card.innerHTML = `
       <div class="product-card-badge"><i class="fa-solid fa-check"></i></div>
-      <div class="product-image-container">
-        <img src="${item.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&h=300&q=80'}" alt="${item.name}" class="product-image" loading="lazy">
-        <div class="product-category-badge">${item.emoji}</div>
-      </div>
-      <div class="product-info">
-        <span class="product-telugu-name">${item.telugu}</span>
-        <span class="product-english-name">${item.name}</span>
-      </div>
-      
-      <div class="card-controls">
-        ${!isSelected ? `
-          <button class="add-initial-btn">
-            <i class="fa-solid fa-plus"></i> Add to List
-          </button>
-        ` : `
-          <div class="card-qty-row">
+      <div class="card-main-row">
+        <div class="product-image-container">
+          <img src="${item.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&h=300&q=80'}" alt="${item.name}" class="product-image" loading="lazy">
+          <div class="product-category-badge">${item.emoji}</div>
+        </div>
+        <div class="product-info">
+          <span class="product-telugu-name">${item.telugu}</span>
+          <span class="product-english-name">${item.name}</span>
+        </div>
+        
+        <div class="card-controls">
+          ${!isSelected ? `
+            <button class="add-initial-btn">
+              <i class="fa-solid fa-plus"></i> Add
+            </button>
+          ` : `
             <div class="quantity-control">
               <button class="qty-btn dec-btn" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
               <span class="qty-value">${currentQty}</span>
@@ -302,12 +302,14 @@ function renderProducts() {
             <select class="unit-select" aria-label="Select Unit">
               ${optionsHtml}
             </select>
-          </div>
-          <div class="card-presets">
-            ${presetsHtml}
-          </div>
-        `}
+          `}
+        </div>
       </div>
+      ${isSelected ? `
+        <div class="card-presets">
+          ${presetsHtml}
+        </div>
+      ` : ''}
     `;
     
     // Initial Add button event listener
@@ -419,43 +421,55 @@ function renderCardInPlace(card, itemId) {
     presetsHtml += `<button class="preset-badge" data-value="${p.value}">${p.label}</button>`;
   });
   
-  const badge = card.querySelector('.product-card-badge');
-  const controls = card.querySelector('.card-controls');
+  card.innerHTML = `
+    <div class="product-card-badge"><i class="fa-solid fa-check"></i></div>
+    <div class="card-main-row">
+      <div class="product-image-container">
+        <img src="${item.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&h=300&q=80'}" alt="${item.name}" class="product-image" loading="lazy">
+        <div class="product-category-badge">${item.emoji}</div>
+      </div>
+      <div class="product-info">
+        <span class="product-telugu-name">${item.telugu}</span>
+        <span class="product-english-name">${item.name}</span>
+      </div>
+      
+      <div class="card-controls">
+        ${!isSelected ? `
+          <button class="add-initial-btn">
+            <i class="fa-solid fa-plus"></i> Add
+          </button>
+        ` : `
+          <div class="quantity-control">
+            <button class="qty-btn dec-btn" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
+            <span class="qty-value">${currentQty}</span>
+            <button class="qty-btn inc-btn" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          
+          <select class="unit-select" aria-label="Select Unit">
+            ${optionsHtml}
+          </select>
+        `}
+      </div>
+    </div>
+    ${isSelected ? `
+      <div class="card-presets">
+        ${presetsHtml}
+      </div>
+    ` : ''}
+  `;
   
+  // Hook up active state events
   if (!isSelected) {
-    controls.innerHTML = `
-      <button class="add-initial-btn">
-        <i class="fa-solid fa-plus"></i> Add to List
-      </button>
-    `;
-    const addInitialBtn = controls.querySelector('.add-initial-btn');
+    const addInitialBtn = card.querySelector('.add-initial-btn');
     addInitialBtn.addEventListener('click', () => {
       updateCartItem(item.id, 1, item.defaultUnit);
       showToast(`Added ${item.name}`);
     });
   } else {
-    controls.innerHTML = `
-      <div class="card-qty-row">
-        <div class="quantity-control">
-          <button class="qty-btn dec-btn" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
-          <span class="qty-value">${currentQty}</span>
-          <button class="qty-btn inc-btn" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
-        </div>
-        
-        <select class="unit-select" aria-label="Select Unit">
-          ${optionsHtml}
-        </select>
-      </div>
-      <div class="card-presets">
-        ${presetsHtml}
-      </div>
-    `;
-    
-    // Hook up active state events
-    const decBtn = controls.querySelector('.dec-btn');
-    const incBtn = controls.querySelector('.inc-btn');
-    const unitSelect = controls.querySelector('.unit-select');
-    const presetButtons = controls.querySelectorAll('.preset-badge');
+    const decBtn = card.querySelector('.dec-btn');
+    const incBtn = card.querySelector('.inc-btn');
+    const unitSelect = card.querySelector('.unit-select');
+    const presetButtons = card.querySelectorAll('.preset-badge');
     
     decBtn.addEventListener('click', () => {
       let step = ['kg', 'liters'].includes(currentUnit) ? 0.25 : 1;
